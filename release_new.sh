@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -e
 
 clone() {
@@ -31,8 +33,8 @@ setTagVersions(){
     do
         version_old=$(grep -m 1 ${i} pom.xml | awk '{print $1}')
         version_new="<${i}>$1</${i}>"
-        echo $(pwd)
-        sed -i "" -e "s#$version_old#$version_new#"  $(pwd)/pom.xml
+        cat $(pwd)/pom.xml
+        sed -i "" -e "s#$version_old#$version_new#" pom.xml
     done
     mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set tag versions" -DpushChanges=false # change to true
 }
@@ -43,7 +45,7 @@ setNextDevVersions(){
     do
         version_old=$(grep -m 1 ${i} pom.xml | awk '{print $1}')
         version_new="<${i}>$1</${i}>"
-        sed -i "" -e "s#$version_old#$version_new#"  $(pwd)/pom.xml
+        sed -i "" -e "s#$version_old#$version_new#" pom.xml
     done
     mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set next dev versions" -DpushChanges=false # change to true
 }
