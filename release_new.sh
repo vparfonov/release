@@ -77,10 +77,9 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setNextDevVersions ${NEXT_DEV_VERSION}
         else
-#            setParentTag ${project} ${VERSION}
-#            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-#            setParentNextDev ${project} ${NEXT_DEV_VERSION}
-echo "esle"
+            setParentTag ${project} ${VERSION}
+            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+            setParentNextDev ${project} ${NEXT_DEV_VERSION}
         fi
         cd ..
     done
