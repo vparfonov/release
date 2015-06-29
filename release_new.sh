@@ -97,7 +97,6 @@ performRelease() {
     cleanUp
     clone
     release
-    cleanUp
 }
 
 
