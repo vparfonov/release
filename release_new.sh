@@ -75,7 +75,7 @@ release() {
             resolveVersions
             setTagVersions ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-#            setNextDevVersions ${NEXT_DEV_VERSION}
+            setNextDevVersions ${NEXT_DEV_VERSION}
         else
 #            setParentTag ${project} ${VERSION}
 #            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
