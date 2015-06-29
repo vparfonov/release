@@ -35,7 +35,7 @@ setTagVersions(){
         version_new="<${i}>$1</${i}>"
         sed -i -e "s#$version_old#$version_new#" pom.xml
     done
-    mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set tag versions" -DpushChanges=false # change to true
+    mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set tag versions" -DpushChanges=true
 }
 
 setNextDevVersions(){
@@ -46,25 +46,25 @@ setNextDevVersions(){
         version_new="<${i}>$1</${i}>"
         sed -i -e "s#$version_old#$version_new#" pom.xml
     done
-    mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set next dev versions" -DpushChanges=false # change to true
+    mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set next dev versions" -DpushChanges=true
 }
 
 setParentTag() {
         echo -e "\x1B[92m############### Set tag of parent pom in $1\x1B[0m"
         mvn versions:update-parent  versions:commit -DparentVersion=[$2]
-        mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set tag of parent pom" -DpushChanges=false # change to true
+        mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set tag of parent pom" -DpushChanges=true
 }
 
 setParentNextDev() {
         echo -e "\x1B[92m############### Set next development version of parent pom in $1\x1B[0m"
         mvn versions:update-parent  versions:commit -DallowSnapshots=true -DparentVersion=[$2]
-        mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set next development version of parent pom" -DpushChanges=false # change to true
+        mvn scm:update  scm:checkin scm:update  -Dincludes=pom.xml  -Dmessage="RELEASE:Set next development version of parent pom" -DpushChanges=true
 }
 
 
 releaseProject(){
         echo -e "\x1B[92m############### Release: $1\x1B[0m"
-        mvn --batch-mode release:prepare release:perform -Dresume=false -Darguments=-Dgpg.passphrase=Ya3Waa2O -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2 -DdryRun=true
+        mvn --batch-mode release:prepare release:perform -Dresume=false -Darguments=-Dgpg.passphrase=Ya3Waa2O -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2
 }
 
 release() {
