@@ -100,6 +100,15 @@ setCheDashboardNextDev() {
         mvn scm:update  scm:checkin scm:update  -Dincludes=bower.json  -Dmessage="RELEASE:Set next dev version of che-dashboard" -DpushChanges=true
 }
 
+generateChangeLog() {
+    if [ ! -z "${CHANGELOG_GITHUB_TOKEN}" ]; then
+        github_changelog_generator --bugs-label  "**Issues fixed with 'bugs' label:**" --pr-label "**Pull requests merged:**" --enhancement-label  "**Issues with 'enhancement' label:**" --issues-label   "**Issues with no labels:**"
+        mvn scm:update  scm:checkin scm:update  -Dincludes=. -Dmessage="Changelog for ${VERSION}" -DpushChanges=true
+    else
+        echo "CHANGELOG_GITHUB_TOKEN is not set, generate changelog skipping."
+    fi
+}
+
 release() {
     for project in ${PROJECT_LIST[@]}
     do
@@ -114,6 +123,7 @@ release() {
             setNextDevVersions ${NEXT_DEV_VERSION} ${CHE_PROPERTIES_LIST[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
+            generateChangeLog
         elif [ ${project} == "che-dependencies" ]; then
             setParentTag ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
@@ -195,7 +205,7 @@ setNextMajor() {
 }
 
 CHE_PROPERTIES_LIST=(
- che.lib.version )
+che.lib.version )
 
 HOSTED_PROPERTIES_LIST=(
 che.lib.version
