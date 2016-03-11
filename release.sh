@@ -212,7 +212,6 @@ che.lib.version
 che.version
 #codenvy.analytics.version
 codenvy.cli.version
-codenvy.cloud-ide.version
 codenvy.dashboard.version
 codenvy.factory.version
 codenvy.hosted-infrastructure.version
@@ -234,7 +233,6 @@ codenvy.plugins.version )
 #dashboard
 #odyssey
 #factory
-#cloud-ide
 #platform-api-client-java
 #cli
 #cdec
