@@ -90,13 +90,13 @@ releaseProject() {
 
 setCheDashboardTag() {
         echo "set che-dashboard tag $1"
-        sed -i -e "s/eclipse\/che.git#master/eclipse\/che.git#$1/" bower.json
+        sed -i -e "s/eclipse\/che.git#master/eclipse\/che.git#$1/" dashboard/bower.json
         mvn scm:update  scm:checkin scm:update  -Dincludes=bower.json  -Dmessage="RELEASE:Set tag version of che-dashboard" -DpushChanges=true
 }
 
 setCheDashboardNextDev() {
         echo "set che-dashboard next dev version #master"
-        sed -i -e "s/eclipse\/che.git#$1/eclipse\/che.git#master/" bower.json
+        sed -i -e "s/eclipse\/che.git#$1/eclipse\/che.git#master/" dashboard/bower.json
         mvn scm:update  scm:checkin scm:update  -Dincludes=bower.json  -Dmessage="RELEASE:Set next dev version of che-dashboard" -DpushChanges=true
 }
 
@@ -131,16 +131,16 @@ release() {
             mvn clean install
         elif [ ${project} == "codenvy-depmgt" ]; then
             setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${HOSTED_PROPERTIES_LIST[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${HOSTED_PROPERTIES_LIST[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install
-        elif [ ${project} == "dashboard" ]; then
+        elif [ ${project} == "codenvy" ]; then
             setParentTag ${project} ${VERSION}
             setCheDashboardTag ${VERSION}
+            setTagVersions ${VERSION} ${HOSTED_PROPERTIES_LIST[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setCheDashboardNextDev ${VERSION}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${HOSTED_PROPERTIES_LIST[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
         else
             setParentTag ${project} ${VERSION}
@@ -208,18 +208,7 @@ CHE_PROPERTIES_LIST=(
 che.lib.version )
 
 HOSTED_PROPERTIES_LIST=(
-che.lib.version
-che.version
-#codenvy.analytics.version
-codenvy.cli.version
-codenvy.dashboard.version
-codenvy.factory.version
-codenvy.hosted-infrastructure.version
-codenvy.im.version
-codenvy.odyssey.version
-codenvy.onpremises.version
-codenvy.platform-api-client-java.version
-codenvy.plugins.version )
+che.version )
 
 # KEEP CORRECT ORDER!
 #PROJECT_LIST=(
@@ -228,15 +217,7 @@ codenvy.plugins.version )
 #che-lib
 #che
 #codenvy-depmgt
-#hosted-infrastructure
-#plugins
-#dashboard
-#odyssey
-#factory
-#platform-api-client-java
-#cli
-#cdec
-#onpremises
+#codenvy
 #che-installer )
 PROJECT_LIST=("${@:3}")
 GPG_PASSPHRASE=$2
