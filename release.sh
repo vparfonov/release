@@ -30,6 +30,7 @@ clone() {
 }
 
 resolveVersions() {
+if [[ -z "${RELEASE_VERSION}" ]] || [[ -z "${RELEASE_NEXT_VERSION}" ]] ; then
     cd onpremises
     CURRENT_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version|grep -Ev '(^\[|Download\w+:)' | sed 's/-SNAPSHOT//g'`
     MAJOR=`echo ${CURRENT_VERSION} | cut -d '-' -f 1`
@@ -37,9 +38,13 @@ resolveVersions() {
     DEV=`echo ${CURRENT_VERSION} | cut -d '-' -f 2 | sed 's/RC//g'`
     VERSION="${MAJOR}-${MARKENTING}${DEV}"
     NEXT_DEV_VERSION="${MAJOR}-${MARKENTING}$((${DEV}+1))-SNAPSHOT"
+    cd ../
+else
+    VERSION=${RELEASE_VERSION}
+    NEXT_DEV_VERSION=${RELEASE_NEXT_VERSION}
+fi
     echo -e "\x1B[92m############### RELEASE VERSION: ${VERSION}\x1B[0m"
     echo -e "\x1B[92m############### NEXT DEV VERSION: ${NEXT_DEV_VERSION}\x1B[0m"
-    cd ../
 }
 
 setTagVersions() {
