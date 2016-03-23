@@ -89,7 +89,7 @@ setParentNextDev() {
 
 releaseProject() {
         echo -e "\x1B[92m############### Release: $1\x1B[0m"
-        mvn release:prepare -Dresume=false -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2 "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE}"
+        mvn release:prepare -DpreparationGoals="clean install" -Dresume=false -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2 "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE}"
         mvn release:perform "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE}"
 }
 
