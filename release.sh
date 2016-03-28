@@ -221,7 +221,6 @@ che.version )
 #che-dependencies
 #che-lib
 #che
-#codenvy-depmgt
 #codenvy
 #che-installer )
 PROJECT_LIST=("${@:3}")
