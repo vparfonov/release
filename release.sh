@@ -134,11 +134,6 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install
-        elif [ ${project} == "codenvy-depmgt" ]; then
-            setParentTag ${project} ${VERSION}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
-            mvn clean install
         elif [ ${project} == "codenvy" ]; then
             setParentTag ${project} ${VERSION}
             setCheDashboardTag ${VERSION}
