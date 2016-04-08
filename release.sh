@@ -142,6 +142,7 @@ release() {
             setCheDashboardNextDev ${VERSION}
             setNextDevVersions ${NEXT_DEV_VERSION} ${HOSTED_PROPERTIES_LIST[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
+            generateChangeLog
         else
             setParentTag ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
