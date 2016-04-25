@@ -137,10 +137,24 @@ release() {
         elif [ ${project} == "codenvy" ]; then
             setParentTag ${project} ${VERSION}
             setCheDashboardTag ${VERSION}
-            setTagVersions ${VERSION} ${HOSTED_PROPERTIES_LIST[@]}
+            setTagVersions ${VERSION} ${CHE_VERSION_PROPERTY[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setCheDashboardNextDev ${VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${HOSTED_PROPERTIES_LIST[@]}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${CHE_VERSION_PROPERTY[@]}
+            setParentNextDev ${project} ${NEXT_DEV_VERSION}
+            generateChangeLog
+        elif [ ${project} == "artik-ide" ]; then
+            setParentTag ${project} ${VERSION}
+            setTagVersions ${VERSION} ${CHE_VERSION_PROPERTY[@]}
+            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${CHE_VERSION_PROPERTY[@]}
+            setParentNextDev ${project} ${NEXT_DEV_VERSION}
+            generateChangeLog
+        elif [ ${project} == "customer-saas" ]; then
+            setParentTag ${project} ${VERSION}
+            setTagVersions ${VERSION} ${ONPREM_VERSION_PROPERTY[@]}
+            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${ONPREM_VERSION_PROPERTY[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             generateChangeLog
         else
@@ -166,50 +180,14 @@ performRelease() {
     release
 }
 
-setNextMajor() {
-    NEXT_MAJOR="4.0.0-beta-1-SNAPSHOT"
-    for PROJECT in ${PROJECT_LIST[@]}; do
-        cd ${PROJECT}
-        if [ ${PROJECT} == "che-parent" ]; then
-            mvn versions:set -DnewVersion=${NEXT_MAJOR} -DgenerateBackupPoms=false
-            mvn scm:update  scm:checkin scm:update  -Dincludes=.  -Dmessage="Set Next Major version" -DpushChanges=true
-            mvn clean install
-        elif [ ${PROJECT} == "che-depmgt" ]; then
-            mvn versions:set -DnewVersion=${NEXT_MAJOR} -DgenerateBackupPoms=false
-            for i in ${CHE_PROPERTIES_LIST[@]}
-            do
-            version_old=$(grep -m 1 ${i} pom.xml | awk '{print $1}')
-            version_new="<${i}>${NEXT_MAJOR}</${i}>"
-            sed -i -e "s#$version_old#$version_new#" pom.xml
-            done
-            mvn versions:update-parent  -DparentVersion=[${NEXT_MAJOR}] -DallowSnapshots=true -DgenerateBackupPoms=false
-            mvn scm:update  scm:checkin scm:update  -Dincludes=. -Dmessage="Set Next Major version" -DpushChanges=true
-            mvn clean install
-        elif [ ${PROJECT} == "codenvy-depmgt" ]; then
-            mvn versions:set -DnewVersion=${NEXT_MAJOR} -DgenerateBackupPoms=false
-            for i in ${HOSTED_PROPERTIES_LIST[@]}
-            do
-            version_old=$(grep -m 1 ${i} pom.xml | awk '{print $1}')
-            version_new="<${i}>${NEXT_MAJOR}</${i}>"
-            sed -i -e "s#$version_old#$version_new#" pom.xml
-            done
-            mvn versions:update-parent  -DparentVersion=[${NEXT_MAJOR}] -DallowSnapshots=true -DgenerateBackupPoms=false
-            mvn scm:update  scm:checkin scm:update  -Dincludes=. -Dmessage="Set Next Major version" -DpushChanges=true
-            mvn clean install
-        else
-            mvn versions:set -DnewVersion=${NEXT_MAJOR} -DgenerateBackupPoms=false
-            mvn versions:update-parent  -DparentVersion=[${NEXT_MAJOR}] -DallowSnapshots=true -DgenerateBackupPoms=false
-            mvn scm:update  scm:checkin scm:update  -Dincludes=.  -Dmessage="Set Next Major version" -DpushChanges=true
-        fi
-        cd ../
-    done
-}
-
 CHE_PROPERTIES_LIST=(
 che.lib.version )
 
-HOSTED_PROPERTIES_LIST=(
+CHE_VERSION_PROPERTY=(
 che.version )
+
+ONPREM_VERSION_PROPERTY=(
+onpremises.version )
 
 # KEEP CORRECT ORDER!
 #PROJECT_LIST=(
@@ -217,7 +195,9 @@ che.version )
 #che-dependencies
 #che-lib
 #che
+#artik-ide
 #codenvy
+#customer-saas
 #che-installer )
 PROJECT_LIST=("${@:3}")
 GPG_PASSPHRASE=$2
