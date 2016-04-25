@@ -142,6 +142,7 @@ release() {
             setCheDashboardNextDev ${VERSION}
             setNextDevVersions ${NEXT_DEV_VERSION} ${CHE_VERSION_PROPERTY[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
+            mvn clean install -N
             generateChangeLog
         elif [ ${project} == "artik-ide" ]; then
             setParentTag ${project} ${VERSION}
