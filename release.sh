@@ -157,7 +157,7 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setNextDevVersions ${NEXT_DEV_VERSION} ${ONPREM_VERSION_PROPERTY[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
-            generateChangeLog
+            #generateChangeLog need to figure out why it is not work maybe due to private project
         else
             setParentTag ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
