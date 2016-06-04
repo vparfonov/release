@@ -188,6 +188,7 @@ CHE_VERSION_PROPERTY=(
 che.version )
 
 ONPREM_VERSION_PROPERTY=(
+che.version
 onpremises.version )
 
 # KEEP CORRECT ORDER!
