@@ -137,10 +137,10 @@ release() {
         elif [ ${project} == "codenvy" ]; then
             setParentTag ${project} ${VERSION}
             setCheDashboardTag ${VERSION}
-            setTagVersions ${VERSION} ${CHE_VERSION_PROPERTY[@]}
+            setTagVersions ${VERSION} ${ONPREM_VERSION_PROPERTIES[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setCheDashboardNextDev ${VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${CHE_VERSION_PROPERTY[@]}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${ONPREM_VERSION_PROPERTIES[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
             generateChangeLog
@@ -153,9 +153,9 @@ release() {
             generateChangeLog
         elif [ ${project} == "customer-saas" ]; then
             setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${ONPREM_VERSION_PROPERTY[@]}
+            setTagVersions ${VERSION} ${SAAS_VERSION_PROPERTIES[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${ONPREM_VERSION_PROPERTY[@]}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${SAAS_VERSION_PROPERTIES[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             #generateChangeLog need to figure out why it is not work maybe due to private project
         else
@@ -188,7 +188,11 @@ che.version )
 CHE_VERSION_PROPERTY=(
 che.version )
 
-ONPREM_VERSION_PROPERTY=(
+ONPREM_VERSION_PROPERTIES=(
+che.lib.version
+che.version )
+
+SAAS_VERSION_PROPERTIES=(
 che.version
 onpremises.version )
 
