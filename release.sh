@@ -144,13 +144,6 @@ release() {
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
             generateChangeLog
-        elif [ ${project} == "artik-ide" ]; then
-            setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${CHE_VERSION_PROPERTY[@]}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${CHE_VERSION_PROPERTY[@]}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
-            generateChangeLog
         elif [ ${project} == "customer-saas" ]; then
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${SAAS_VERSION_PROPERTIES[@]}
@@ -185,9 +178,6 @@ CHE_PROPERTIES_LIST=(
 che.lib.version
 che.version )
 
-CHE_VERSION_PROPERTY=(
-che.version )
-
 ONPREM_VERSION_PROPERTIES=(
 che.lib.version
 che.version )
@@ -202,7 +192,6 @@ onpremises.version )
 #che-dependencies
 #che-lib
 #che
-#artik-ide
 #codenvy
 #customer-saas
 #che-installer )
