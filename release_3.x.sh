@@ -31,7 +31,7 @@ resolveVersions() {
     echo -e "\x1B[92m############### NEXT DEV VERSION: ${NEXT_DEV_VERSION}\x1B[0m"
     cd ../
 }
-
+#ss
 setTagVersions() {
     echo -e "\x1B[92m############### Set tag versions.\x1B[0m"
     NEW_VER=$1 && shift
