@@ -192,6 +192,9 @@ SAAS_VERSION_PROPERTIES=(
 che.version
 onpremises.version )
 
+CODENVY_DOCS_VERSION_PROPERTIES=(
+che.docs.version )
+
 # KEEP CORRECT ORDER!
 #PROJECT_LIST=(
 #che-parent
