@@ -134,6 +134,12 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install
+        elif [ ${project} == "codenvy-docs" ]; then
+            setParentTag ${project} ${VERSION}
+            setTagVersions ${VERSION} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
+            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
+            setParentNextDev ${project} ${NEXT_DEV_VERSION}
         elif [ ${project} == "codenvy" ]; then
             setParentTag ${project} ${VERSION}
             setCheDashboardTag ${VERSION}
@@ -191,7 +197,9 @@ onpremises.version )
 #che-parent
 #che-dependencies
 #che-lib
+#che-docs
 #che
+#codenvy-docs
 #codenvy
 #customer-saas
 #che-installer )
