@@ -186,6 +186,7 @@ che.version )
 
 ONPREM_VERSION_PROPERTIES=(
 che.lib.version
+codenvy.docs.version
 che.version )
 
 SAAS_VERSION_PROPERTIES=(
