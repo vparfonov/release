@@ -181,6 +181,7 @@ performRelease() {
 }
 
 CHE_PROPERTIES_LIST=(
+che.docs.version
 che.lib.version
 che.version )
 
