@@ -13,7 +13,7 @@ clone() {
         else
             echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo"
             case ${PROJECT} in
-                che-parent|che-dependencies|che-lib|che)
+                che-parent|che-dependencies|che-lib|che|che-docs)
                     echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo from \x1B[92mECLIPSE\x1B[0m"
                     git clone git@github.com:eclipse/${PROJECT}.git
                     ;;
