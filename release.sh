@@ -128,7 +128,7 @@ release() {
             setNextDevVersions ${NEXT_DEV_VERSION} ${CHE_PROPERTIES_LIST[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
-            generateChangeLog
+            #generateChangeLog
         elif [ ${project} == "che-dependencies" ]; then
             setParentTag ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
@@ -149,7 +149,7 @@ release() {
             setNextDevVersions ${NEXT_DEV_VERSION} ${ONPREM_VERSION_PROPERTIES[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
-            generateChangeLog
+            #generateChangeLog
         elif [ ${project} == "customer-saas" ]; then
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${SAAS_VERSION_PROPERTIES[@]}
