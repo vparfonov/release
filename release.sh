@@ -134,7 +134,7 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install
-        elif [ ${project} == "codenvy-docs" ]; then
+        elif [ ${project} == "docs" ]; then
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
@@ -204,10 +204,10 @@ che.docs.version )
 #che-lib
 #che-docs
 #che
-#codenvy-docs
+#docs
 #codenvy
-#customer-saas
-#che-installer )
+#saas
+#)
 PROJECT_LIST=("${@:3}")
 GPG_PASSPHRASE=$2
 ############################
