@@ -150,7 +150,7 @@ release() {
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
             #generateChangeLog
-        elif [ ${project} == "customer-saas" ]; then
+        elif [ ${project} == "saas" ]; then
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${SAAS_VERSION_PROPERTIES[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
