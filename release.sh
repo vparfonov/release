@@ -13,7 +13,7 @@ clone() {
         else
             echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo"
             case ${PROJECT} in
-                che-parent|che-dependencies|che-lib|che|che-docs)
+                che-parent|che-dependencies|che-lib|che|che-docs|che-archetypes)
                     echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo from \x1B[92mECLIPSE\x1B[0m"
                     git clone git@github.com:eclipse/${PROJECT}.git
                     ;;
@@ -157,6 +157,12 @@ release() {
             setNextDevVersions ${NEXT_DEV_VERSION} ${SAAS_VERSION_PROPERTIES[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             #generateChangeLog need to figure out why it is not work maybe due to private project
+        elif [ ${project} == "che-archetypes" ]; then
+            setParentTag ${project} ${VERSION}
+            setTagVersions ${VERSION} ${ARCHETYPES_VERSION_PROPERTIES[@]}
+            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${ARCHETYPES_VERSION_PROPERTIES[@]}
+            setParentNextDev ${project} ${NEXT_DEV_VERSION}
         else
             setParentTag ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
@@ -196,6 +202,10 @@ onpremises.version )
 
 CODENVY_DOCS_VERSION_PROPERTIES=(
 che.docs.version )
+
+ARCHETYPES_VERSION_PROPERTIES=(
+che.version
+codenvy.version )
 
 # KEEP CORRECT ORDER!
 #PROJECT_LIST=(
