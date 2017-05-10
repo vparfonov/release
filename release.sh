@@ -133,14 +133,18 @@ fi
 }
 
 setTagVersions() {
+    local VERSION_OF_DEPS=$1 && shift
+    local DEPS_LIST=($@)
     echo -e "\x1B[92m############### Set tag versions.\x1B[0m"
-    updateDependencies $1 $2
+    updateDependencies $VERSION_OF_DEPS ${DEPS_LIST[@]}
     pushChanesWithMaven pom.xml "RELEASE: Set tag versions" ${RELEASE_BRANCH_NAME} 
 }
 
 setNextDevVersions() {
+    local VERSION_OF_DEPS=$1 && shift
+    local DEPS_LIST=($@)
     echo -e "\x1B[92m############### Set next dev versions.\x1B[0m"
-    updateDependencies $1 $2
+    updateDependencies $VERSION_OF_DEPS ${DEPS_LIST[@]}
     pushChanesWithMaven pom.xml "RELEASE: Set next dev versions" ${RELEASE_BRANCH_NAME}
 }
 
