@@ -65,7 +65,7 @@ createReleaseBranches() {
 }
 
 pushChanesWithMaven() {
-    mvn scm:update scm:checkin scm:update -Dincludes=$1 -Dmessage="$2" -DpushChanges=true
+    mvn scm:update scm:checkin scm:update -Dincludes=$1 -Dmessage="$2" -DpushChanges=true -D=scmVersionType=branch -DscmVersion=$3
 }
 
 setNextDevelopmentVersionInMaster() {
@@ -109,7 +109,7 @@ setNextDevelopmentVersionInMaster() {
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${ARCHETYPES_VERSION_PROPERTIES[@]}
         fi
 
-        pushChanesWithMaven . "RELEASE: Set next development version"
+        pushChanesWithMaven . "RELEASE: Set next development version" master
         cd ../
     done
 }
@@ -135,25 +135,25 @@ fi
 setTagVersions() {
     echo -e "\x1B[92m############### Set tag versions.\x1B[0m"
     updateDependencies $1 $2
-    pushChanesWithMaven pom.xml "RELEASE: Set tag versions"
+    pushChanesWithMaven pom.xml "RELEASE: Set tag versions" ${RELEASE_BRANCH_NAME} 
 }
 
 setNextDevVersions() {
     echo -e "\x1B[92m############### Set next dev versions.\x1B[0m"
     updateDependencies $1 $2
-    pushChanesWithMaven pom.xml "RELEASE: Set next dev versions"
+    pushChanesWithMaven pom.xml "RELEASE: Set next dev versions" ${RELEASE_BRANCH_NAME}
 }
 
 setParentTag() {
         echo -e "\x1B[92m############### Set tag of parent pom in $1\x1B[0m"
             updateParent $2
-            pushChanesWithMaven pom.xml "RELEASE: Set tag of parent pom"
+            pushChanesWithMaven pom.xml "RELEASE: Set tag of parent pom" ${RELEASE_BRANCH_NAME}
 }
 
 setParentNextDev() {
         echo -e "\x1B[92m############### Set next development version of parent pom in $1\x1B[0m"
             updateParent $2
-            pushChanesWithMaven pom.xml "RELEASE: Set next development version of parent pom"
+            pushChanesWithMaven pom.xml "RELEASE: Set next development version of parent pom" ${RELEASE_BRANCH_NAME}
 }
 
 releaseProject() {
@@ -165,13 +165,13 @@ releaseProject() {
 setCheDashboardTag() {
         echo "set che-dashboard tag $1"
         updateDashboardDependency $1
-        pushChanesWithMaven dashboard/bower.json "RELEASE: Set tag version of che-dashboard"
+        pushChanesWithMaven dashboard/bower.json "RELEASE: Set tag version of che-dashboard" ${RELEASE_BRANCH_NAME}
 }
 
 setCheDashboardNextDev() {
         echo "set che-dashboard next dev version #master"
         updateDashboardDependency "master"
-        pushChanesWithMaven dashboard/bower.json "RELEASE: Set next dev version of che-dashboard"
+        pushChanesWithMaven dashboard/bower.json "RELEASE: Set next dev version of che-dashboard" ${RELEASE_BRANCH_NAME}
 }
 
 release() {
