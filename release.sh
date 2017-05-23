@@ -104,6 +104,14 @@ setNextDevelopmentVersionInMaster() {
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${SAAS_VERSION_PROPERTIES[@]}
             mvn clean install -N
+        elif [ ${PROJECT} == "redhat" ]; then
+            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+            updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${REDHAT_VERSION_PROPERTIES[@]}
+            mvn clean install -N
+        elif [ ${PROJECT} == "silexica" ]; then
+            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+            updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${SILEXICA_VERSION_PROPERTIES[@]}
+            mvn clean install -N
         elif [ ${PROJECT} == "che-archetypes" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${ARCHETYPES_VERSION_PROPERTIES[@]}
@@ -162,8 +170,7 @@ setParentNextDev() {
 
 releaseProject() {
         echo -e "\x1B[92m############### Release: $1\x1B[0m"
-        mvn release:prepare -Dresume=false -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2 "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE} -Darchetype.test.skip=true"
-        mvn release:perform "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE} -Darchetype.test.skip=true"
+        mvn release:prepare release:perform -Dresume=false -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2 "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE} -Darchetype.test.skip=true"
 }
 
 setCheDashboardTag() {
@@ -219,6 +226,18 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setNextDevVersions ${NEXT_DEV_VERSION} ${SAAS_VERSION_PROPERTIES[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
+        elif [ ${project} == "redhat" ]; then
+            setParentTag ${project} ${VERSION}
+            setTagVersions ${VERSION} ${REDHAT_VERSION_PROPERTIES[@]}
+            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${REDHAT_VERSION_PROPERTIES[@]}
+            setParentNextDev ${project} ${NEXT_DEV_VERSION}
+        elif [ ${project} == "silexica" ]; then
+            setParentTag ${project} ${VERSION}
+            setTagVersions ${VERSION} ${SILEXICA_VERSION_PROPERTIES[@]}
+            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+            setNextDevVersions ${NEXT_DEV_VERSION} ${SILEXICA_VERSION_PROPERTIES[@]}
+            setParentNextDev ${project} ${NEXT_DEV_VERSION}
         elif [ ${project} == "che-archetypes" ]; then
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${ARCHETYPES_VERSION_PROPERTIES[@]}
@@ -269,6 +288,14 @@ SAAS_VERSION_PROPERTIES=(
 che.version
 onpremises.version )
 
+REDHAT_VERSION_PROPERTIES=(
+che.version
+codenvy.version )
+
+SILEXICA_VERSION_PROPERTIES=(
+che.version
+codenvy.version )
+
 CODENVY_DOCS_VERSION_PROPERTIES=(
 che.docs.version )
 
@@ -286,7 +313,9 @@ codenvy.version )
 #docs
 #codenvy
 #saas
-#che-archetypes )
+#che-archetypes
+#redhat
+#silexica )
 
 PROJECT_LIST=("${@:3}")
 GPG_PASSPHRASE=$2
