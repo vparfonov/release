@@ -74,6 +74,8 @@ setNextDevelopmentVersionInMaster() {
         exit 2
     fi
 
+    local NEXT_TAG_VER=$(echo ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} | sed -e 's#-SNAPSHOT##')
+
     for PROJECT in ${PROJECT_LIST[@]}; do
         echo -e "\x1B[92m set next development version in master of ${PROJECT} project\x1B[0m"
         cd ${PROJECT}
@@ -92,6 +94,12 @@ setNextDevelopmentVersionInMaster() {
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PROPERTIES_LIST[@]}
             mvn clean install -N
+            # update dockerfiles
+            cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
+            sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-stacks
+            sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
+            sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
         elif [ ${PROJECT} == "docs" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
@@ -100,18 +108,54 @@ setNextDevelopmentVersionInMaster() {
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${ONPREM_VERSION_PROPERTIES[@]}
             updateDashboardDependency "master"
             mvn clean install -N
+            # update dockerfiles
+            cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
+            sed -i -e "s#IMAGE_SWARM=codenvy/swarm:.*#IMAGE_SWARM=codenvy/swarm:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_SOCAT=codenvy/socat:.*#IMAGE_SWARM=codenvy/socat:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_INIT=codenvy/init:.*#IMAGE_SWARM=codenvy/init:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_AGENTS=codenvy/agents:.*#IMAGE_SWARM=codenvy/agents:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_CODENVY=codenvy/codenvy:.*#IMAGE_SWARM=codenvy/codenvy:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_RSYSLOG=codenvy/rsyslog:.*#IMAGE_RSYSLOG=codenvy/rsyslog:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         elif [ ${PROJECT} == "saas" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${SAAS_VERSION_PROPERTIES[@]}
             mvn clean install -N
+            # update dockerfiles
+            cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
+            sed -i -e "s#IMAGE_SWARM=codenvy/swarm:.*#IMAGE_SWARM=codenvy/swarm:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_SOCAT=codenvy/socat:.*#IMAGE_SWARM=codenvy/socat:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_INIT=codenvy/init-saas:.*#IMAGE_SWARM=codenvy/init-saas:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_AGENTS=codenvy/agents-saas:.*#IMAGE_SWARM=codenvy/agents-saas:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_CODENVY=codenvy/codenvy-saas:.*#IMAGE_SWARM=codenvy/codenvy-saas:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_RSYSLOG=codenvy/rsyslog:.*#IMAGE_RSYSLOG=codenvy/rsyslog:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         elif [ ${PROJECT} == "redhat" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${REDHAT_VERSION_PROPERTIES[@]}
             mvn clean install -N
+            # update dockerfiles
+            cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
+            sed -i -e "s#IMAGE_SWARM=codenvy/swarm:.*#IMAGE_SWARM=codenvy/swarm:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_SOCAT=codenvy/socat:.*#IMAGE_SWARM=codenvy/socat:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_INIT=codenvy/init-redhat:.*#IMAGE_SWARM=codenvy/init-redhat:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_AGENTS=codenvy/agents-redhat:.*#IMAGE_SWARM=codenvy/agents-redhat:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_CODENVY=codenvy/codenvy-redhat:.*#IMAGE_SWARM=codenvy/codenvy-redhat:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_RSYSLOG=codenvy/rsyslog:.*#IMAGE_RSYSLOG=codenvy/rsyslog:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         elif [ ${PROJECT} == "silexica" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${SILEXICA_VERSION_PROPERTIES[@]}
             mvn clean install -N
+            # update dockerfiles
+            cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
+            sed -i -e "s#IMAGE_SWARM=codenvy/swarm:.*#IMAGE_SWARM=codenvy/swarm:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_SOCAT=codenvy/socat:.*#IMAGE_SWARM=codenvy/socat:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_INIT=codenvy/init-silexica:.*#IMAGE_SWARM=codenvy/init-silexica:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_AGENTS=codenvy/agents-silexica:.*#IMAGE_SWARM=codenvy/agents-silexica:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_CODENVY=codenvy/codenvy-silexica:.*#IMAGE_SWARM=codenvy/codenvy-silexica:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#IMAGE_RSYSLOG=codenvy/rsyslog:.*#IMAGE_RSYSLOG=codenvy/rsyslog:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         elif [ ${PROJECT} == "che-archetypes" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${ARCHETYPES_VERSION_PROPERTIES[@]}
@@ -164,8 +208,8 @@ setParentTag() {
 
 setParentNextDev() {
         echo -e "\x1B[92m############### Set next development version of parent pom in $1\x1B[0m"
-            updateParent $2
-            pushChanesWithMaven pom.xml "RELEASE: Set next development version of parent pom" ${RELEASE_BRANCH_NAME}
+        updateParent $2
+        pushChanesWithMaven pom.xml "RELEASE: Set next development version of parent pom" ${RELEASE_BRANCH_NAME}
 }
 
 releaseProject() {
@@ -185,6 +229,27 @@ setCheDashboardNextDev() {
         pushChanesWithMaven dashboard/bower.json "RELEASE: Set next dev version of che-dashboard" ${RELEASE_BRANCH_NAME}
 }
 
+set_tags_in_che_dockerfiles_for_release() {
+        sed -i -e "s#nightly#$VERSION#" dockerfiles/base/scripts/base/images/images-bootstrap
+        sed -i -e "s#nightly#$VERSION#" dockerfiles/base/scripts/base/images/images-utilities
+        sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
+        sed -i -e "s#-SNAPSHOT##" dockerfiles/lib/dto-pom.xml
+        pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
+}
+
+set_tags_in_codenvy_dockerfiles_for_release() {
+        sed -i -e "s#:nightly#:$VERSION#" dockerfiles/cli/Dockerfile
+        sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
+        pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
+}
+
+set_tags_in_codenvy_custom_assembly_dockerfiles_for_release() {
+        sed -i -e "s#:nightly#:$VERSION#" dockerfiles/cli/Dockerfile
+        sed -i -e "s#:nightly#:$VERSION#" dockerfiles/init/Dockerfile
+        sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
+        pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
+}
+
 release() {
     for project in ${PROJECT_LIST[@]}
     do
@@ -194,6 +259,7 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             mvn clean install
         elif [ ${project} == "che" ]; then
+            set_tags_in_che_dockerfiles_for_release
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${CHE_PROPERTIES_LIST[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
@@ -212,6 +278,7 @@ release() {
             setNextDevVersions ${NEXT_DEV_VERSION} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
         elif [ ${project} == "codenvy" ]; then
+            set_tags_in_codenvy_dockerfiles_for_release
             setParentTag ${project} ${VERSION}
             setCheDashboardTag ${VERSION}
             setTagVersions ${VERSION} ${ONPREM_VERSION_PROPERTIES[@]}
@@ -221,18 +288,21 @@ release() {
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
         elif [ ${project} == "saas" ]; then
+            set_tags_in_codenvy_custom_assembly_dockerfiles_for_release
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${SAAS_VERSION_PROPERTIES[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setNextDevVersions ${NEXT_DEV_VERSION} ${SAAS_VERSION_PROPERTIES[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
         elif [ ${project} == "redhat" ]; then
+            set_tags_in_codenvy_custom_assembly_dockerfiles_for_release
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${REDHAT_VERSION_PROPERTIES[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setNextDevVersions ${NEXT_DEV_VERSION} ${REDHAT_VERSION_PROPERTIES[@]}
             setParentNextDev ${project} ${NEXT_DEV_VERSION}
         elif [ ${project} == "silexica" ]; then
+            set_tags_in_codenvy_custom_assembly_dockerfiles_for_release
             setParentTag ${project} ${VERSION}
             setTagVersions ${VERSION} ${SILEXICA_VERSION_PROPERTIES[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
