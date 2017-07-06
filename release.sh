@@ -69,7 +69,7 @@ pushChanesWithMaven() {
 }
 
 update_dockerfiles_in_master() {
-    # update dockerfiles
+    # generate next tag version manifest, update latest version.
     cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
     sed -i -e "s#\(.*=codenvy/.*\)\(:.*\)#\1:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
     sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
