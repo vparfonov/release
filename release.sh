@@ -75,7 +75,7 @@ setNextDevelopmentVersionInMaster() {
         echo "RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER is not set, exit."
         exit 2
     fi
-
+    resolveVersions
     NEXT_TAG_VER=$(echo ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} | sed -e 's#-SNAPSHOT##')
 
     for PROJECT in ${PROJECT_LIST[@]}; do
