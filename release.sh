@@ -68,6 +68,7 @@ update_dockerfiles_in_master() {
     cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
     sed -i -e "s#\(.*=codenvy/.*\)\(:.*\)#\1:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
     sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
+    git add .
 }
 
 setNextDevelopmentVersionInMaster() {
@@ -103,6 +104,7 @@ setNextDevelopmentVersionInMaster() {
             sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-stacks
             sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
             sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
+            git add .
         elif [ ${PROJECT} == "docs" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
