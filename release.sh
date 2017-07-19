@@ -49,17 +49,12 @@ updateDashboardDependency() {
     sed -i -e "s/eclipse\/che.git#.*\",/eclipse\/che.git#$1\",/" dashboard/bower.json
 }
 
-createReleaseBranches() {
-    if [ -z "${RELEASE_BRANCH_NAME}" ]; then
-        echo "RELEASE_BRANCH_NAME is not set, exit."
-        exit 2
-    fi
-
+createBranches() {
     for PROJECT in ${PROJECT_LIST[@]}; do
-        echo -e "\x1B[92m create release branch in ${PROJECT}\x1B[0m"
+        echo -e "\x1B[92m create $1 branch in ${PROJECT}\x1B[0m"
         cd ${PROJECT}
-        git branch ${RELEASE_BRANCH_NAME}
-        git push --set-upstream origin ${RELEASE_BRANCH_NAME}
+        git branch $1
+        git push --set-upstream origin $1
         cd ../
     done
 }
@@ -86,6 +81,7 @@ setNextDevelopmentVersionInMaster() {
     for PROJECT in ${PROJECT_LIST[@]}; do
         echo -e "\x1B[92m set next development version in master of ${PROJECT} project\x1B[0m"
         cd ${PROJECT}
+        git checkout $1
         mvn versions:set -DnewVersion=${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} -DgenerateBackupPoms=false
 
         if [ ${PROJECT} == "che-parent" ]; then
@@ -136,7 +132,7 @@ setNextDevelopmentVersionInMaster() {
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${ARCHETYPES_VERSION_PROPERTIES[@]}
         fi
 
-        pushChanesWithMaven . "RELEASE: Set next development version" master
+        pushChanesWithMaven . "RELEASE: Set next development version" $1
         cd ../
     done
 }
@@ -308,8 +304,9 @@ cleanUp() {
 prepareRelease() {
     cleanUp
     clone
-    createReleaseBranches
-    setNextDevelopmentVersionInMaster
+    createBranches ${RELEASE_BRANCH_NAME}
+    createBranches set_next_version_in_master_${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+    setNextDevelopmentVersionInMaster set_next_version_in_master_${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
 }
 
 performRelease() {
