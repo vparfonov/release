@@ -187,7 +187,7 @@ setParentNextDev() {
 
 releaseProject() {
         echo -e "\x1B[92m############### Release: $1\x1B[0m"
-        mvn release:prepare release:perform -Dresume=false -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2 "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE} -Darchetype.test.skip=true"
+        mvn release:prepare release:perform -Dresume=false -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2 "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE} -Darchetype.test.skip=true -Dversion.animal-sniffer.enforcer-rule=1.16"
 }
 
 setCheDashboardTag() {
