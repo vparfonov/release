@@ -13,13 +13,13 @@ clone() {
         else
             echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo"
             case ${PROJECT} in
-                che-parent|che-dependencies|che-lib|che|che-docs|che-archetypes)
-                    echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo from \x1B[92mECLIPSE\x1B[0m"
-                    git clone git@github.com:eclipse/${PROJECT}.git
+                che-ide-extension|che-ide-server-extension)
+                    echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo from \x1B[92mCHE-SAMPLES\x1B[0m"
+                    git clone git@github.com:che-samples/${PROJECT}.git
                     ;;
                 *)
-                    echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo from \x1B[92mCODENVY\x1B[0m"
-                    git clone git@github.com:codenvy/${PROJECT}.git
+                    echo -e "Cloning \x1B[92m${PROJECT}\x1B[0m repo from \x1B[92mECLIPSE\x1B[0m"
+                    git clone git@github.com:eclipse/${PROJECT}.git
                     ;;
             esac
             cd ${PROJECT}
@@ -45,10 +45,6 @@ updateDependencies() {
     done
 }
 
-updateDashboardDependency() {
-    sed -i -e "s/eclipse\/che.git#.*\",/eclipse\/che.git#$1\",/" dashboard/bower.json
-}
-
 createBranches() {
     for PROJECT in ${PROJECT_LIST[@]}; do
         echo -e "\x1B[92m create $1 branch in ${PROJECT}\x1B[0m"
@@ -61,14 +57,6 @@ createBranches() {
 
 pushChanesWithMaven() {
     mvn scm:update scm:checkin scm:update -Dincludes=$1 -Dmessage="$2" -DpushChanges=true -D=scmVersionType=branch -DscmVersion=$3
-}
-
-update_dockerfiles_in_master() {
-    # generate next tag version manifest, update latest version.
-    cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
-    sed -i -e "s#\(.*=codenvy/.*\)\(:.*\)#\1:$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
-    sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
-    git add .
 }
 
 setNextDevelopmentVersionInMaster() {
@@ -105,33 +93,6 @@ setNextDevelopmentVersionInMaster() {
             sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
             sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
             git add .
-        elif [ ${PROJECT} == "docs" ]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
-        elif [ ${PROJECT} == "codenvy" ]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${ONPREM_VERSION_PROPERTIES[@]}
-            updateDashboardDependency "master"
-            mvn clean install -N
-            update_dockerfiles_in_master
-        elif [ ${PROJECT} == "saas" ]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${SAAS_VERSION_PROPERTIES[@]}
-            mvn clean install -N
-            update_dockerfiles_in_master
-        elif [ ${PROJECT} == "redhat" ]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${REDHAT_VERSION_PROPERTIES[@]}
-            mvn clean install -N
-            update_dockerfiles_in_master
-        elif [ ${PROJECT} == "silexica" ]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${SILEXICA_VERSION_PROPERTIES[@]}
-            mvn clean install -N
-            update_dockerfiles_in_master
-        elif [ ${PROJECT} == "che-archetypes" ]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${ARCHETYPES_VERSION_PROPERTIES[@]}
         fi
 
         pushChanesWithMaven . "RELEASE: Set next development version" $1
@@ -157,32 +118,18 @@ fi
     echo -e "\x1B[92m############### NEXT DEV VERSION: ${NEXT_DEV_VERSION}\x1B[0m"
 }
 
-setTagVersions() {
+setDepsVersions() {
     local VERSION_OF_DEPS=$1 && shift
     local DEPS_LIST=($@)
-    echo -e "\x1B[92m############### Set tag versions.\x1B[0m"
+    echo -e "\x1B[92m############### Update dependencies versions.\x1B[0m"
     updateDependencies $VERSION_OF_DEPS ${DEPS_LIST[@]}
-    pushChanesWithMaven pom.xml "RELEASE: Set tag versions" ${RELEASE_BRANCH_NAME} 
+    pushChanesWithMaven pom.xml "RELEASE: Update dependencies versions" ${RELEASE_BRANCH_NAME}
 }
 
-setNextDevVersions() {
-    local VERSION_OF_DEPS=$1 && shift
-    local DEPS_LIST=($@)
-    echo -e "\x1B[92m############### Set next dev versions.\x1B[0m"
-    updateDependencies $VERSION_OF_DEPS ${DEPS_LIST[@]}
-    pushChanesWithMaven pom.xml "RELEASE: Set next dev versions" ${RELEASE_BRANCH_NAME}
-}
-
-setParentTag() {
-        echo -e "\x1B[92m############### Set tag of parent pom in $1\x1B[0m"
-            updateParent $2
-            pushChanesWithMaven pom.xml "RELEASE: Set tag of parent pom" ${RELEASE_BRANCH_NAME}
-}
-
-setParentNextDev() {
-        echo -e "\x1B[92m############### Set next development version of parent pom in $1\x1B[0m"
-        updateParent $2
-        pushChanesWithMaven pom.xml "RELEASE: Set next development version of parent pom" ${RELEASE_BRANCH_NAME}
+setParentVersion() {
+    echo -e "\x1B[92m############### Update parent pom version in $1\x1B[0m"
+    updateParent $2
+    pushChanesWithMaven pom.xml "RELEASE: Update parent pom version" ${RELEASE_BRANCH_NAME}
 }
 
 releaseProject() {
@@ -190,36 +137,11 @@ releaseProject() {
         mvn release:prepare release:perform -Dresume=false -Dtag=$2 -DdevelopmentVersion=$3 -DreleaseVersion=$2 "-Darguments=-DskipTests=true -Dskip-validate-sources -Dgpg.passphrase=${GPG_PASSPHRASE} -Darchetype.test.skip=true -Dversion.animal-sniffer.enforcer-rule=1.16"
 }
 
-setCheDashboardTag() {
-        echo "set che-dashboard tag $1"
-        updateDashboardDependency $1
-        pushChanesWithMaven dashboard/bower.json "RELEASE: Set tag version of che-dashboard" ${RELEASE_BRANCH_NAME}
-}
-
-setCheDashboardNextDev() {
-        echo "set che-dashboard next dev version #master"
-        updateDashboardDependency "master"
-        pushChanesWithMaven dashboard/bower.json "RELEASE: Set next dev version of che-dashboard" ${RELEASE_BRANCH_NAME}
-}
-
 set_tags_in_che_dockerfiles_for_release() {
         sed -i -e "s#nightly#$VERSION#" dockerfiles/base/scripts/base/images/images-bootstrap
         sed -i -e "s#nightly#$VERSION#" dockerfiles/base/scripts/base/images/images-utilities
         sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         sed -i -e "s#-SNAPSHOT##" dockerfiles/lib/dto-pom.xml
-        pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
-}
-
-set_tags_in_codenvy_dockerfiles_for_release() {
-        sed -i -e "s#:nightly#:$VERSION#" dockerfiles/cli/Dockerfile
-        sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
-        pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
-}
-
-set_tags_in_codenvy_custom_assembly_dockerfiles_for_release() {
-        sed -i -e "s#:nightly#:$VERSION#" dockerfiles/cli/Dockerfile
-        sed -i -e "s#:nightly#:$VERSION#" dockerfiles/init/Dockerfile
-        sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
 }
 
@@ -233,64 +155,27 @@ release() {
             mvn clean install
         elif [ ${project} == "che" ]; then
             set_tags_in_che_dockerfiles_for_release
-            setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${CHE_PROPERTIES_LIST[@]}
+            setParentVersion ${project} ${VERSION}
+            setDepsVersions ${VERSION} ${CHE_PROPERTIES_LIST[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${CHE_PROPERTIES_LIST[@]}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
+            setDepsVersions ${NEXT_DEV_VERSION} ${CHE_PROPERTIES_LIST[@]}
+            setParentVersion ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
         elif [ ${project} == "che-dependencies" ]; then
-            setParentTag ${project} ${VERSION}
+            setParentVersion ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
+            setParentVersion ${project} ${NEXT_DEV_VERSION}
             mvn clean install
-        elif [ ${project} == "docs" ]; then
-            setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
+        elif [[ ${project} == *"extension"* ]]; then
+            setParentVersion ${project} ${VERSION}
+            setDepsVersions ${VERSION} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${CODENVY_DOCS_VERSION_PROPERTIES[@]}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
-        elif [ ${project} == "codenvy" ]; then
-            set_tags_in_codenvy_dockerfiles_for_release
-            setParentTag ${project} ${VERSION}
-            setCheDashboardTag ${VERSION}
-            setTagVersions ${VERSION} ${ONPREM_VERSION_PROPERTIES[@]}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setCheDashboardNextDev
-            setNextDevVersions ${NEXT_DEV_VERSION} ${ONPREM_VERSION_PROPERTIES[@]}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
-            mvn clean install -N
-        elif [ ${project} == "saas" ]; then
-            set_tags_in_codenvy_custom_assembly_dockerfiles_for_release
-            setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${SAAS_VERSION_PROPERTIES[@]}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${SAAS_VERSION_PROPERTIES[@]}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
-        elif [ ${project} == "redhat" ]; then
-            set_tags_in_codenvy_custom_assembly_dockerfiles_for_release
-            setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${REDHAT_VERSION_PROPERTIES[@]}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${REDHAT_VERSION_PROPERTIES[@]}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
-        elif [ ${project} == "silexica" ]; then
-            set_tags_in_codenvy_custom_assembly_dockerfiles_for_release
-            setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${SILEXICA_VERSION_PROPERTIES[@]}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${SILEXICA_VERSION_PROPERTIES[@]}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
-        elif [ ${project} == "che-archetypes" ]; then
-            setParentTag ${project} ${VERSION}
-            setTagVersions ${VERSION} ${ARCHETYPES_VERSION_PROPERTIES[@]}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setNextDevVersions ${NEXT_DEV_VERSION} ${ARCHETYPES_VERSION_PROPERTIES[@]}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
+            setDepsVersions ${NEXT_DEV_VERSION} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
+            setParentVersion ${project} ${NEXT_DEV_VERSION}
         else
-            setParentTag ${project} ${VERSION}
+            setParentVersion ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setParentNextDev ${project} ${NEXT_DEV_VERSION}
+            setParentVersion ${project} ${NEXT_DEV_VERSION}
         fi
         cd ..
     done
@@ -323,29 +208,8 @@ che.docs.version
 che.lib.version
 che.version )
 
-ONPREM_VERSION_PROPERTIES=(
-che.lib.version
-codenvy.docs.version
+CHE_EXTENSIONS_PROPERIES_LIST=(
 che.version )
-
-SAAS_VERSION_PROPERTIES=(
-che.version
-onpremises.version )
-
-REDHAT_VERSION_PROPERTIES=(
-che.version
-codenvy.version )
-
-SILEXICA_VERSION_PROPERTIES=(
-che.version
-codenvy.version )
-
-CODENVY_DOCS_VERSION_PROPERTIES=(
-che.docs.version )
-
-ARCHETYPES_VERSION_PROPERTIES=(
-che.version
-codenvy.version )
 
 # KEEP CORRECT ORDER!
 #PROJECT_LIST=(
@@ -354,12 +218,8 @@ codenvy.version )
 #che-lib
 #che-docs
 #che
-#docs
-#codenvy
-#saas
-#che-archetypes
-#redhat
-#silexica )
+#che-ide-extension
+#che-ide-server-extension )
 
 PROJECT_LIST=("${@:3}")
 GPG_PASSPHRASE=$2
