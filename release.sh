@@ -95,7 +95,7 @@ setNextDevelopmentVersionInMaster() {
             sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
             git add .
         fi
-        ">>>>>>>>>>> DEBUG"
+        echo ">>>>>>>>>>> DEBUG"
         pushChanesWithMaven . "RELEASE: Set next development version" $1
         cd ../
     done
