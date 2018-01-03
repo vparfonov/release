@@ -56,6 +56,7 @@ createBranches() {
 }
 
 pushChanesWithMaven() {
+    echo -e "\x1B[92m Push changes with maven into $3 branch\x1B[0m"
     mvn scm:update scm:checkin scm:update -Dincludes=$1 -Dmessage="$2" -DpushChanges=true -D=scmVersionType=branch -DscmVersion=$3
 }
 
@@ -94,7 +95,7 @@ setNextDevelopmentVersionInMaster() {
             sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
             git add .
         fi
-
+        ">>>>>>>>>>> DEBUG"
         pushChanesWithMaven . "RELEASE: Set next development version" $1
         cd ../
     done
