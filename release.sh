@@ -83,6 +83,9 @@ setNextDevelopmentVersionInMaster() {
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
         elif [ ${PROJECT} == "che-docs" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+        elif [[ ${project} == *"extension"* ]]; then
+            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+            setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
         elif [ ${PROJECT} == "che" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PROPERTIES_LIST[@]}
