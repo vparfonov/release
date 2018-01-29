@@ -86,6 +86,9 @@ setNextDevelopmentVersionInMaster() {
         elif [[ ${project} == *"extension"* ]]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
+        elif [[ ${project} == *"che-plugin"* ]]; then
+            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+            setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PLUGINS_PROPERIES_LIST[@]}
         elif [ ${PROJECT} == "che" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PROPERTIES_LIST[@]}
@@ -176,6 +179,12 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setDepsVersions ${NEXT_DEV_VERSION} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
             setParentVersion ${project} ${NEXT_DEV_VERSION}
+        elif [[ ${project} == *"che-plugin"* ]]; then
+            setParentVersion ${project} ${VERSION}
+            setDepsVersions ${VERSION} ${CHE_PLUGINS_PROPERIES_LIST[@]}
+            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+            setDepsVersions ${NEXT_DEV_VERSION} ${CHE_PLUGINS_PROPERIES_LIST[@]}
+            setParentVersion ${project} ${NEXT_DEV_VERSION}
         else
             setParentVersion ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
@@ -214,6 +223,10 @@ che.version )
 
 CHE_EXTENSIONS_PROPERIES_LIST=(
 che.version )
+
+CHE_PLUGINS_PROPERIES_LIST=(
+che.version
+)
 
 # KEEP CORRECT ORDER!
 #PROJECT_LIST=(
