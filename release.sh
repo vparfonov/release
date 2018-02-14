@@ -83,12 +83,6 @@ setNextDevelopmentVersionInMaster() {
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
         elif [ ${PROJECT} == "che-docs" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-        elif [[ ${project} == *"extension"* ]]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
-        elif [[ ${project} == *"che-plugin"* ]]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PLUGINS_PROPERIES_LIST[@]}
         elif [ ${PROJECT} == "che" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PROPERTIES_LIST[@]}
@@ -100,6 +94,12 @@ setNextDevelopmentVersionInMaster() {
             sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
             sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
             git add .
+        elif [[ ${project} == *"extension"* ]]; then
+            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+            setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
+        elif [[ ${project} == *"plugin"* ]]; then
+            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+            setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PLUGINS_PROPERIES_LIST[@]}
         fi
         echo ">>>>>>>>>>> DEBUG"
         pushChanesWithMaven . "RELEASE: Set next development version" $1
@@ -219,10 +219,12 @@ performRelease() {
 CHE_PROPERTIES_LIST=(
 che.docs.version
 che.lib.version
-che.version )
+che.version
+)
 
 CHE_EXTENSIONS_PROPERIES_LIST=(
-che.version )
+che.version
+)
 
 CHE_PLUGINS_PROPERIES_LIST=(
 che.version
