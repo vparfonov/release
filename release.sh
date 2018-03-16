@@ -154,6 +154,7 @@ set_tags_in_che_dockerfiles_for_release() {
         sed -i -e "s#DEFAULT_IMAGE_INIT=\"eclipse/che-init:.*\"#DEFAULT_IMAGE_INIT=\"eclipse/che-init:$VERSION\"#" dockerfiles/init/modules/openshift/files/scripts/ocp.sh
         sed -i -e "s#DEFAULT_CHE_CLI_IMAGE=\"eclipse/che-cli:.*\"#DEFAULT_CHE_CLI_IMAGE=\"eclipse/che-cli:$VERSION\"#" dockerfiles/init/modules/openshift/files/scripts/ocp.sh
         sed -i -e "s#eclipse/che-ip:.*#eclipse/che-ip:$VERSION#" dockerfiles/init/modules/openshift/files/scripts/ocp.sh
+        sed -i -e "s#:nightly#:$VERSION#g" ide/che-core-ide-stacks/src/main/resources/stacks.json
         pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
 }
 
