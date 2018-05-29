@@ -109,14 +109,8 @@ setNextDevelopmentVersionInMaster() {
 
 resolveVersions() {
 if [[ -z "${RELEASE_VERSION}" ]] || [[ -z "${RELEASE_NEXT_VERSION}" ]] ; then
-    cd onpremises
-    CURRENT_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version|grep -Ev '(^\[|Download\w+:)' | sed 's/-SNAPSHOT//g'`
-    MAJOR=`echo ${CURRENT_VERSION} | cut -d '-' -f 1`
-    MARKENTING=`echo ${CURRENT_VERSION} | cut -d '-' -f 2 | sed 's/[0-9]*//g'`
-    DEV=`echo ${CURRENT_VERSION} | cut -d '-' -f 2 | sed 's/RC//g'`
-    VERSION="${MAJOR}-${MARKENTING}${DEV}"
-    NEXT_DEV_VERSION="${MAJOR}-${MARKENTING}$((${DEV}+1))-SNAPSHOT"
-    cd ../
+    echo "RELEASE_VERSION and RELEASE_NEXT_VERSION must be set in ENV"
+    exit 1
 else
     VERSION=${RELEASE_VERSION}
     NEXT_DEV_VERSION=${RELEASE_NEXT_VERSION}
@@ -145,16 +139,14 @@ releaseProject() {
 }
 
 set_tags_in_che_dockerfiles_for_release() {
+        THEIA_VERSION="$(awk '/ARG THEIA_VERSION=/{print $NF}' dockerfiles/theia/Dockerfile | cut -d '=' -f2)-$VERSION"
         sed -i -e "s#nightly#$VERSION#" dockerfiles/base/scripts/base/images/images-bootstrap
         sed -i -e "s#nightly#$VERSION#" dockerfiles/base/scripts/base/images/images-utilities
         sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         sed -i -e "s#-SNAPSHOT##" dockerfiles/lib/dto-pom.xml
         sed -i -e "s#nightly#$VERSION#" deploy/openshift/deploy_che.sh
-        sed -i -e "s#DEFAULT_CHE_IMAGE_TAG=.*#DEFAULT_CHE_IMAGE_TAG=\"$VERSION\"#" deploy/openshift/ocp.sh
-        sed -i -e "s#DEFAULT_IMAGE_INIT=\"eclipse/che-init:.*\"#DEFAULT_IMAGE_INIT=\"eclipse/che-init:$VERSION\"#" deploy/openshift/ocp.sh
-        sed -i -e "s#DEFAULT_CHE_CLI_IMAGE=\"eclipse/che-cli:.*\"#DEFAULT_CHE_CLI_IMAGE=\"eclipse/che-cli:$VERSION\"#" deploy/openshift/ocp.sh
         sed -i -e "s#eclipse/che-ip:.*#eclipse/che-ip:$VERSION#" deploy/openshift/ocp.sh
-        sed -i -e "s#:nightly#:$VERSION#g" ide/che-core-ide-stacks/src/main/resources/stacks.json
+        sed -i -e "s#:nightly#:$THEIA_VERSION#g" ide/che-core-ide-stacks/src/main/resources/stacks.json
         pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
 }
 
