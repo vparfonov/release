@@ -76,9 +76,6 @@ setNextDevelopmentVersionInMaster() {
 
         if [ ${PROJECT} == "che-parent" ]; then
             mvn clean install
-        elif [ ${PROJECT} == "che-dependencies" ]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            mvn clean install
         elif [ ${PROJECT} == "che-lib" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
         elif [ ${PROJECT} == "che-docs" ]; then
@@ -167,11 +164,6 @@ release() {
             setDepsVersions ${NEXT_DEV_VERSION} ${CHE_PROPERTIES_LIST[@]}
             setParentVersion ${project} ${NEXT_DEV_VERSION}
             mvn clean install -N
-        elif [ ${project} == "che-dependencies" ]; then
-            setParentVersion ${project} ${VERSION}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setParentVersion ${project} ${NEXT_DEV_VERSION}
-            mvn clean install
         elif [[ ${project} == *"extension"* ]]; then
             setParentVersion ${project} ${VERSION}
             setDepsVersions ${VERSION} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
@@ -232,7 +224,6 @@ che.version
 # KEEP CORRECT ORDER!
 #PROJECT_LIST=(
 #che-parent
-#che-dependencies
 #che-lib
 #che-docs
 #che
