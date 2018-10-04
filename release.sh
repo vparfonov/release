@@ -87,7 +87,9 @@ setNextDevelopmentVersionInMaster() {
             # update dockerfiles
             cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
             sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-bootstrap
             sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-stacks
+            sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-utilities
             sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
             sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
             git add .
@@ -137,8 +139,6 @@ releaseProject() {
 
 set_tags_in_che_dockerfiles_for_release() {
         THEIA_VERSION="$(awk '/ARG THEIA_VERSION=/{print $NF}' dockerfiles/theia/Dockerfile | cut -d '=' -f2)-$VERSION"
-        sed -i -e "s#nightly#$VERSION#" dockerfiles/base/scripts/base/images/images-bootstrap
-        sed -i -e "s#nightly#$VERSION#" dockerfiles/base/scripts/base/images/images-utilities
         sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         sed -i -e "s#-SNAPSHOT##" dockerfiles/lib/dto-pom.xml
         sed -i -e "s#nightly#$VERSION#" deploy/openshift/deploy_che.sh
