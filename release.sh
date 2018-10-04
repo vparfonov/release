@@ -211,6 +211,7 @@ CHE_PROPERTIES_LIST=(
 che.docs.version
 che.lib.version
 che.version
+che.dashboard.version
 )
 
 CHE_EXTENSIONS_PROPERIES_LIST=(
