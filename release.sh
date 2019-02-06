@@ -139,7 +139,7 @@ releaseProject() {
 }
 
 set_tags_in_che_dockerfiles_for_release() {
-        THEIA_VERSION="$(awk '/ARG THEIA_VERSION=/{print $NF}' dockerfiles/theia/Dockerfile | cut -d '=' -f2)-$VERSION"
+        #THEIA_VERSION="$(awk '/ARG THEIA_VERSION=/{print $NF}' dockerfiles/theia/Dockerfile | cut -d '=' -f2)-$VERSION"
         sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         sed -i -e "s#-SNAPSHOT##" dockerfiles/lib/dto-pom.xml
         #sed -i -e "s#-SNAPSHOT##" typescript-dto/dto-pom.xml
