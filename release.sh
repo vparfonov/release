@@ -142,8 +142,8 @@ set_tags_in_che_dockerfiles_for_release() {
         #sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
         #sed -i -e "s#-SNAPSHOT##" dockerfiles/lib/dto-pom.xml
         #sed -i -e "s#-SNAPSHOT##" typescript-dto/dto-pom.xml
+        #sed -i -e "s#eclipse/che-ip:.*#eclipse/che-ip:$VERSION#" deploy/openshift/ocp.sh
         sed -i -e "s#nightly#$VERSION#" deploy/openshift/deploy_che.sh
-        sed -i -e "s#eclipse/che-ip:.*#eclipse/che-ip:$VERSION#" deploy/openshift/ocp.sh
         sed -i -e "s#eclipse/che-theia:.*-nightly#eclipse/che-theia:$THEIA_VERSION#g" ide/che-core-ide-stacks/src/main/resources/stacks.json
         sed -i -e "s#eclipse/che-dev:nightly#eclipse/che-dev:$VERSION#g" ide/che-core-ide-stacks/src/main/resources/stacks.json
         pushChanesWithMaven . "RELEASE: Set tags in Dockerfiles" ${RELEASE_BRANCH_NAME}
