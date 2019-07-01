@@ -83,25 +83,24 @@ setNextDevelopmentVersionInMaster() {
         elif [ ${PROJECT} == "che" ]; then
             updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
             updateDependencies ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PROPERTIES_LIST[@]}
-            mvn clean install -N
+            #mvn clean install -N
             # update dockerfiles
-            cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
-            sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
-            sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-bootstrap
-            sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-stacks
-            sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-utilities
-            sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
-            sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
-            #sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" typescript-dto/dto-pom.xml
+            #cp -r  dockerfiles/cli/version/$VERSION dockerfiles/cli/version/$NEXT_TAG_VER
+            #sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images
+            #sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-bootstrap
+            #sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-stacks
+            #sed -i -e "s#$VERSION#$NEXT_TAG_VER#" dockerfiles/cli/version/${NEXT_TAG_VER}/images-utilities
+            #sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
+            #sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" dockerfiles/lib/dto-pom.xml
+            sed -i -e "s#>.*-SNAPSHOT#>$RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER#" typescript-dto/dto-pom.xml
             git add .
-        elif [[ ${project} == *"extension"* ]]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
-        elif [[ ${project} == *"plugin"* ]]; then
-            updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
-            setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PLUGINS_PROPERIES_LIST[@]}
-        fi
-        echo ">>>>>>>>>>> DEBUG"
+        #elif [[ ${project} == *"extension"* ]]; then
+        #    updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+        #    setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
+        #elif [[ ${project} == *"plugin"* ]]; then
+        #    updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
+        #    setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PLUGINS_PROPERIES_LIST[@]}
+        #fi
         pushChanesWithMaven . "RELEASE: Set next development version" $1
         cd ../
     done
@@ -140,8 +139,8 @@ releaseProject() {
 
 set_tags_in_che_dockerfiles_for_release() {
         THEIA_VERSION="$(curl -s https://raw.githubusercontent.com/eclipse/che-theia/master/dockerfiles/theia/Dockerfile | grep "ARG THEIA_VERSION=" | cut -d '=' -f2)-$VERSION"
-        sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
-        sed -i -e "s#-SNAPSHOT##" dockerfiles/lib/dto-pom.xml
+        #sed -i -e "s#.*#$VERSION#" dockerfiles/cli/version/latest.ver
+        #sed -i -e "s#-SNAPSHOT##" dockerfiles/lib/dto-pom.xml
         #sed -i -e "s#-SNAPSHOT##" typescript-dto/dto-pom.xml
         sed -i -e "s#nightly#$VERSION#" deploy/openshift/deploy_che.sh
         sed -i -e "s#eclipse/che-ip:.*#eclipse/che-ip:$VERSION#" deploy/openshift/ocp.sh
@@ -165,19 +164,19 @@ release() {
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
             setDepsVersions ${NEXT_DEV_VERSION} ${CHE_PROPERTIES_LIST[@]}
             setParentVersion ${project} ${NEXT_DEV_VERSION}
-            mvn clean install -N
-        elif [[ ${project} == *"extension"* ]]; then
-            setParentVersion ${project} ${VERSION}
-            setDepsVersions ${VERSION} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setDepsVersions ${NEXT_DEV_VERSION} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
-            setParentVersion ${project} ${NEXT_DEV_VERSION}
-        elif [[ ${project} == *"che-plugin"* ]]; then
-            setParentVersion ${project} ${VERSION}
-            setDepsVersions ${VERSION} ${CHE_PLUGINS_PROPERIES_LIST[@]}
-            releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
-            setDepsVersions ${NEXT_DEV_VERSION} ${CHE_PLUGINS_PROPERIES_LIST[@]}
-            setParentVersion ${project} ${NEXT_DEV_VERSION}
+            #mvn clean install -N
+        #elif [[ ${project} == *"extension"* ]]; then
+        #    setParentVersion ${project} ${VERSION}
+        #    setDepsVersions ${VERSION} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
+        #    releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+        #    setDepsVersions ${NEXT_DEV_VERSION} ${CHE_EXTENSIONS_PROPERIES_LIST[@]}
+        #    setParentVersion ${project} ${NEXT_DEV_VERSION}
+        #elif [[ ${project} == *"che-plugin"* ]]; then
+        #    setParentVersion ${project} ${VERSION}
+        #    setDepsVersions ${VERSION} ${CHE_PLUGINS_PROPERIES_LIST[@]}
+        #    releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
+        #    setDepsVersions ${NEXT_DEV_VERSION} ${CHE_PLUGINS_PROPERIES_LIST[@]}
+        #    setParentVersion ${project} ${NEXT_DEV_VERSION}
         else
             setParentVersion ${project} ${VERSION}
             releaseProject ${project} ${VERSION} ${NEXT_DEV_VERSION}
@@ -229,9 +228,7 @@ che.version
 #che-parent
 #che-lib
 #che-docs
-#che
-#che-ide-extension
-#che-ide-server-extension )
+#che )
 
 PROJECT_LIST=("${@:3}")
 GPG_PASSPHRASE=$2
