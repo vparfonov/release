@@ -100,7 +100,7 @@ setNextDevelopmentVersionInMaster() {
         #elif [[ ${project} == *"plugin"* ]]; then
         #    updateParent ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER}
         #    setDepsVersions ${RELEASE_NEXT_DEVELOPMENT_VERSION_IN_MASTER} ${CHE_PLUGINS_PROPERIES_LIST[@]}
-        #fi
+        fi
         pushChanesWithMaven . "RELEASE: Set next development version" $1
         cd ../
     done
